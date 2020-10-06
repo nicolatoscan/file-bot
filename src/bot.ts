@@ -34,6 +34,7 @@ class Bot {
         ctx.reply("Inizio download")
         exec(`wget -P ${process.env.PATH_TO_DOWNLOAD} ${url}`, (err, stdout, stderr) => {
             if (err) {
+                console.log(err);
                 ctx.reply("Errore")
                 return;
             }
