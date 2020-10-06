@@ -35,9 +35,11 @@ class Bot {
         let child = spawn('wget', ['-P', process.env.PATH_TO_DOWNLOAD, url]);
 
         child.stdout.on('data', (data) => {
+            ctx.reply(data)
         });
-
+        
         child.stderr.on('data', (data) => {
+            ctx.reply(data )
         });
 
         child.on('close', (code) => {
