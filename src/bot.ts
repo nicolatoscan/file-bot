@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { Telegraf, Context } from 'telegraf';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 dotenv.config();
 
 class Bot {
@@ -32,14 +32,17 @@ class Bot {
 
     private async downloadExec(url: string, ctx: Context) {
         ctx.reply("Inizio download")
-        exec(`wget -P ${process.env.PATH_TO_DOWNLOAD} ${url}`, (err, stdout, stderr) => {
-            if (err) {
-                console.log(err);
-                ctx.reply("Errore")
-                return;
-            }
-            ctx.reply("Scaricato")
-        })
+        let child = spawn('wget', ['-P', process.env.PATH_TO_DOWNLOAD, url]);
+
+        child.stdout.on('data', (data) => {
+        });
+
+        child.stderr.on('data', (data) => {
+        });
+
+        child.on('close', (code) => {
+            ctx.reply("Donwload finito")
+        });
     }
 
 }
