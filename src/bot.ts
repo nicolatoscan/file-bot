@@ -38,18 +38,21 @@ class Bot {
         let child = spawn('wget', ['-P', process.env.PATH_TO_UPLOAD, url]);
         child.stdout.on('data', (data) => { });
         child.stderr.on('data', (data) => { });
-        child.on('close', (code) => {
+        child.on('close', async (code) => {
+
             ctx.reply("Download finito")
+            await new Promise(resolve => setTimeout(resolve, 1000));
             ctx.reply("Caricamento su Telegram")
-            exec(`ls ${process.env.PATH_TO_TEMP} -Art | tail -n 1`, (err, stdout, stderr) => {
+            exec(`ls ${process.env.PATH_TO_TEMP} -Art | tail -n 1`, async (err, stdout, stderr) => {
+                let file = await fs.readFileSync(`${process.env.PATH_TO_TEMP}/${stdout.trim()}`)
                 ctx.replyWithDocument({
-                    url: url,
-                    filename: stdout ? stdout : "unnamed"
-                });
+                    source: file,
+                    filename: stdout
+                 });
             });
         });
     }
-    
+
 }
 
 const bot = new Bot();
