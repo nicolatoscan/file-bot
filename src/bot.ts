@@ -43,8 +43,8 @@ class Bot {
             ctx.reply("Download finito")
             await new Promise(resolve => setTimeout(resolve, 1000));
             ctx.reply("Caricamento su Telegram")
-            exec(`ls ${process.env.PATH_TO_TEMP} -Art | tail -n 1`, async (err, stdout, stderr) => {
-                let file = await fs.readFileSync(`${process.env.PATH_TO_TEMP}/${stdout.trim()}`)
+            exec(`ls ${process.env.PATH_TO_UPLOAD} -Art | tail -n 1`, async (err, stdout, stderr) => {
+                let file = await fs.readFileSync(`${process.env.PATH_TO_UPLOAD}/${stdout.trim()}`)
                 ctx.replyWithDocument({
                     source: file,
                     filename: stdout
