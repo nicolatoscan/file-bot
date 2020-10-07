@@ -1,6 +1,8 @@
 import * as dotenv from 'dotenv';
 import { Telegraf, Context } from 'telegraf';
-import { spawn } from 'child_process';
+import { exec, spawn } from 'child_process';
+import * as fs from 'fs';
+import { InputFileByPath } from 'telegraf/typings/telegram-types';
 dotenv.config();
 
 class Bot {
@@ -32,19 +34,22 @@ class Bot {
 
     private async downloadExec(url: string, ctx: Context) {
         ctx.reply("Inizio download")
-        let child = spawn('wget', ['-P', process.env.PATH_TO_DOWNLOAD, url]);
 
-        child.stdout.on('data', (data) => {
-        });
-        
-        child.stderr.on('data', (data) => {
-        });
-
+        let child = spawn('wget', ['-P', process.env.PATH_TO_UPLOAD, url]);
+        child.stdout.on('data', (data) => { });
+        child.stderr.on('data', (data) => { });
         child.on('close', (code) => {
-            ctx.reply("Donwload finito")
+            ctx.reply("Download finito")
+            ctx.reply("Caricamento su Telegram")
+            exec(`ls ${process.env.PATH_TO_TEMP} -Art | tail -n 1`, (err, stdout, stderr) => {
+                ctx.replyWithDocument({
+                    url: url,
+                    filename: stdout ? stdout : "unnamed"
+                });
+            });
         });
     }
-
+    
 }
 
 const bot = new Bot();
