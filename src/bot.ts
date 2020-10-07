@@ -50,7 +50,7 @@ class Bot {
         child.stdout.on('data', (data) => { });
         child.stderr.on('data', (data) => { });
         child.on('close', async (code) => {
-            
+
             ctx.reply("Download finito")
             await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -65,15 +65,19 @@ class Bot {
 
         });
     }
-    
+
     private async sendToTelegram(filename: string, ctx: Context) {
         ctx.reply("Caricamento su Telegram")
-
+        
+        try {
             let file = await fs.readFileSync(`${process.env.PATH_TO_UPLOAD}/${filename}`)
             ctx.replyWithDocument({
                 source: file,
                 filename: filename
             });
+        } catch (er) {
+            ctx.reply("File too large")
+        }
     }
 
 }
